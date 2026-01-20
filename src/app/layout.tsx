@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,7 +42,7 @@ export default function RootLayout({
             alignItems: 'center',
             width: '100%'
           }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
               <Image
                 src="/church-logo.png"
                 alt="Holyseeds Church Official Logo"
@@ -50,10 +51,10 @@ export default function RootLayout({
                 priority
                 style={{ objectFit: 'contain' }}
               />
-            </a>
+            </Link>
             <nav>
               <ul style={{ display: 'flex', gap: '2rem', listStyle: 'none' }}>
-                <li><a href="/" style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--primary)', letterSpacing: '0.05em' }}>HOME</a></li>
+                <li><Link href="/" style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--primary)', letterSpacing: '0.05em' }}>HOME</Link></li>
                 {/* Future Menu Items */}
               </ul>
             </nav>

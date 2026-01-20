@@ -2,12 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/lib/supabase";
+import Link from "next/link";
 
 export default function SermonSearch() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchDate, setSearchDate] = useState("");
     const [mediaType, setMediaType] = useState<"video" | "audio">("video");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<Array<{
+        id: number;
+        title: string;
+        date: string;
+        video_url: string;
+        audio_url: string;
+    }>>([]);
     const [loading, setLoading] = useState(false);
 
     const fetchSermons = async () => {
@@ -28,8 +35,9 @@ export default function SermonSearch() {
             const { data, error } = await query;
             if (error) throw error;
             setResults(data || []);
-        } catch (error: any) {
-            console.error("Error fetching sermons:", error.message);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+            console.error("Error fetching sermons:", errorMessage);
         } finally {
             setLoading(false);
         }
@@ -37,18 +45,19 @@ export default function SermonSearch() {
 
     useEffect(() => {
         fetchSermons();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchDate]);
 
     return (
         <div className="container fade-in" style={{ padding: '80px 24px' }}>
             <header style={{ marginBottom: '60px' }}>
-                <a href="/" style={{
+                <Link href="/" style={{
                     color: 'var(--primary)', fontWeight: 700, fontSize: '0.9rem',
                     display: 'inline-flex', alignItems: 'center', gap: '8px',
                     marginBottom: '24px', letterSpacing: '0.05em'
                 }}>
                     ← BACK TO HOME
-                </a>
+                </Link>
                 <h2 style={{ fontSize: '3.5rem', marginBottom: '16px' }}>
                     📖 <span className="text-gradient">Sermon Archive</span>
                 </h2>

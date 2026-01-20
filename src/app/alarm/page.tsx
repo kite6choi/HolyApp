@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function AlarmSettings() {
     const [alarmTime, setAlarmTime] = useState("07:00");
@@ -11,7 +12,7 @@ export default function AlarmSettings() {
     return (
         <div className="container fade-in" style={{ padding: '80px 24px' }}>
             <header style={{ marginBottom: '60px' }}>
-                <a href="/" style={{
+                <Link href="/" style={{
                     color: 'var(--primary)',
                     fontWeight: 700,
                     fontSize: '0.9rem',
@@ -22,7 +23,7 @@ export default function AlarmSettings() {
                     letterSpacing: '0.05em'
                 }}>
                     ← BACK TO HOME
-                </a>
+                </Link>
                 <h2 style={{ fontSize: '3.5rem', marginBottom: '16px' }}>
                     ⏰ <span className="text-gradient">Alarm Settings</span>
                 </h2>

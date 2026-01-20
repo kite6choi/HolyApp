@@ -42,7 +42,13 @@ export default function AdminUpload() {
             }
 
             // 2. 데이터베이스에 정보 저장
-            const insertData: any = {
+            const insertData: {
+                title: string;
+                video_url: string;
+                audio_url: string;
+                date?: string;
+                lyrics?: string;
+            } = {
                 title,
                 video_url: videoUrl,
                 audio_url: audioUrl,
@@ -66,8 +72,9 @@ export default function AdminUpload() {
             setLyrics("");
             setDate("");
             setAudioFile(null);
-        } catch (error: any) {
-            setMessage(`❌ 오류 발생: ${error.message}`);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+            setMessage(`❌ 오류 발생: ${errorMessage}`);
         } finally {
             setLoading(false);
         }
