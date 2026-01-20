@@ -7,7 +7,7 @@ export default function Home() {
       description: "매주 선포되는 생명력 있는 말씀을 고화질 영상과 생생한 음성으로 만나보세요.",
       icon: "📖",
       link: "/search/sermon",
-      gradient: "linear-gradient(135deg, #2D5BFF, #00D1FF)"
+      gradient: "linear-gradient(135deg, #059669, #10B981)"
     },
     {
       title: "Praise",
@@ -15,7 +15,7 @@ export default function Home() {
       description: "마음을 여는 아름다운 찬양의 제목과 가사를 쉽고 빠르게 찾아보세요.",
       icon: "🎵",
       link: "/search/praise",
-      gradient: "linear-gradient(135deg, #00D1FF, #00FFC2)"
+      gradient: "linear-gradient(135deg, #10B981, #34D399)"
     },
     {
       title: "Alarm",
@@ -23,7 +23,7 @@ export default function Home() {
       description: "은혜로운 말씀과 함께 시작하는 특별한 아침을 예약하세요.",
       icon: "⏰",
       link: "/alarm",
-      gradient: "linear-gradient(135deg, #FF4D00, #FFAD00)"
+      gradient: "linear-gradient(135deg, #FBBF24, #F59E0B)"
     }
   ];
 

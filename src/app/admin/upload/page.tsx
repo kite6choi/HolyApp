@@ -8,24 +8,69 @@ export default function AdminUpload() {
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [lyrics, setLyrics] = useState("");
-    const [videoUrl, setVideoUrl] = useState("");
+    const [videoFile, setVideoFile] = useState<File | null>(null);
     const [audioFile, setAudioFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [message, setMessage] = useState("");
 
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setMessage("");
+        setUploadProgress(0);
 
         try {
+            let videoUrl = "";
             let audioUrl = "";
 
-            // 1. 오디오 파일이 있다면 Storage에 업로드
+            // 1. 비디오 파일이 있다면 Storage에 업로드
+            if (videoFile) {
+                // 파일 검증
+                if (!videoFile.type.includes('video/mp4')) {
+                    throw new Error('MP4 파일만 업로드 가능합니다.');
+                }
+                if (videoFile.size > 50 * 1024 * 1024) {
+                    throw new Error('비디오 파일은 50MB 이하여야 합니다.');
+                }
+
+                const fileExt = videoFile.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+                const filePath = `${type}/${fileName}`;
+
+                setUploadProgress(25);
+
+                const { error: uploadError } = await supabase.storage
+                    .from('videos')
+                    .upload(filePath, videoFile);
+
+                if (uploadError) throw uploadError;
+
+                setUploadProgress(50);
+
+                // 공개 URL 가져오기
+                const { data: { publicUrl } } = supabase.storage
+                    .from('videos')
+                    .getPublicUrl(filePath);
+
+                videoUrl = publicUrl;
+            }
+
+            // 2. 오디오 파일이 있다면 Storage에 업로드
             if (audioFile) {
+                // 파일 검증
+                if (!audioFile.type.includes('audio/mpeg') && !audioFile.type.includes('audio/mp3')) {
+                    throw new Error('MP3 파일만 업로드 가능합니다.');
+                }
+                if (audioFile.size > 50 * 1024 * 1024) {
+                    throw new Error('오디오 파일은 50MB 이하여야 합니다.');
+                }
+
                 const fileExt = audioFile.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
                 const filePath = `${type}/${fileName}`;
+
+                setUploadProgress(75);
 
                 const { error: uploadError } = await supabase.storage
                     .from('audio')
@@ -41,7 +86,9 @@ export default function AdminUpload() {
                 audioUrl = publicUrl;
             }
 
-            // 2. 데이터베이스에 정보 저장
+            setUploadProgress(90);
+
+            // 3. 데이터베이스에 정보 저장
             const insertData: {
                 title: string;
                 video_url: string;
@@ -66,12 +113,15 @@ export default function AdminUpload() {
 
             if (error) throw error;
 
+            setUploadProgress(100);
             setMessage("✅ 성공적으로 업로드되었습니다!");
+
+            // 폼 초기화
             setTitle("");
-            setVideoUrl("");
+            setVideoFile(null);
+            setAudioFile(null);
             setLyrics("");
             setDate("");
-            setAudioFile(null);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
             setMessage(`❌ 오류 발생: ${errorMessage}`);
@@ -150,29 +200,62 @@ export default function AdminUpload() {
                     )}
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>YOUTUBE URL (유튜브 주소)</label>
+                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>VIDEO FILE (비디오 파일 - MP4)</label>
                         <input
-                            type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)}
-                            placeholder="https://www.youtube.com/watch?v=..."
+                            type="file" accept="video/mp4"
+                            onChange={(e) => setVideoFile(e.target.files ? e.target.files[0] : null)}
                             style={{ padding: '15px', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'var(--background)' }}
                         />
+                        {videoFile && (
+                            <p style={{ fontSize: '0.85rem', color: 'var(--primary)' }}>
+                                📹 {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
+                            </p>
+                        )}
+                        <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>* MP4 형식, 최대 50MB</p>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>AUDIO FILE (오디오 파일 업로드)</label>
+                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>AUDIO FILE (오디오 파일 - MP3)</label>
                         <input
-                            type="file" accept="audio/*"
+                            type="file" accept="audio/mp3,audio/mpeg"
                             onChange={(e) => setAudioFile(e.target.files ? e.target.files[0] : null)}
                             style={{ padding: '15px', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'var(--background)' }}
                         />
-                        <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>* 직접 파일을 업로드하면 앱의 오디오 모드에서 감상할 수 있습니다.</p>
+                        {audioFile && (
+                            <p style={{ fontSize: '0.85rem', color: 'var(--primary)' }}>
+                                🎵 {audioFile.name} ({(audioFile.size / 1024 / 1024).toFixed(2)} MB)
+                            </p>
+                        )}
+                        <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>* MP3 형식, 최대 50MB</p>
                     </div>
+
+                    {loading && uploadProgress > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div style={{
+                                width: '100%',
+                                height: '8px',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                borderRadius: '4px',
+                                overflow: 'hidden'
+                            }}>
+                                <div style={{
+                                    width: `${uploadProgress}%`,
+                                    height: '100%',
+                                    backgroundColor: 'var(--primary)',
+                                    transition: 'width 0.3s ease'
+                                }} />
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--primary)', textAlign: 'center' }}>
+                                업로드 중... {uploadProgress}%
+                            </p>
+                        </div>
+                    )}
 
                     {message && (
                         <div style={{
                             padding: '15px', borderRadius: '10px',
-                            backgroundColor: message.startsWith('✅') ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)',
-                            color: message.startsWith('✅') ? '#2e7d32' : '#c62828',
+                            backgroundColor: message.startsWith('✅') ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                            color: message.startsWith('✅') ? '#059669' : '#dc2626',
                             fontWeight: 600, textAlign: 'center'
                         }}>
                             {message}

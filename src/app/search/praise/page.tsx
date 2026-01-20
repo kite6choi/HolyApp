@@ -15,6 +15,13 @@ export default function PraiseSearch() {
         audio_url: string;
     }>>([]);
     const [loading, setLoading] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<{
+        id: number;
+        title: string;
+        lyrics: string;
+        video_url: string;
+        audio_url: string;
+    } | null>(null);
 
     const fetchPraises = async () => {
         setLoading(true);
@@ -115,6 +122,68 @@ export default function PraiseSearch() {
                 </div>
             </section>
 
+            {selectedItem && (
+                <section className="glass-card" style={{ marginBottom: '50px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <div>
+                            <h3 style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{selectedItem.title}</h3>
+                            <p className="text-muted">&quot;{selectedItem.lyrics}&quot;</p>
+                        </div>
+                        <button
+                            onClick={() => setSelectedItem(null)}
+                            style={{
+                                padding: '10px 20px',
+                                borderRadius: '12px',
+                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                color: '#dc2626',
+                                fontWeight: 700,
+                                fontSize: '0.85rem'
+                            }}
+                        >
+                            CLOSE
+                        </button>
+                    </div>
+                    {mediaType === "video" && selectedItem.video_url ? (
+                        <video
+                            key={selectedItem.id}
+                            controls
+                            autoPlay
+                            style={{
+                                width: '100%',
+                                borderRadius: '16px',
+                                backgroundColor: '#000'
+                            }}
+                        >
+                            <source src={selectedItem.video_url} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    ) : mediaType === "audio" && selectedItem.audio_url ? (
+                        <audio
+                            key={selectedItem.id}
+                            controls
+                            autoPlay
+                            style={{
+                                width: '100%',
+                                borderRadius: '16px'
+                            }}
+                        >
+                            <source src={selectedItem.audio_url} type="audio/mpeg" />
+                            Your browser does not support the audio tag.
+                        </audio>
+                    ) : (
+                        <div style={{
+                            padding: '60px',
+                            textAlign: 'center',
+                            backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                            borderRadius: '16px',
+                            color: '#dc2626'
+                        }}>
+                            {mediaType === "video" ? "비디오" : "오디오"} 파일이 없습니다.
+                        </div>
+                    )}
+                </section>
+            )}
+
             <section>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                     <h3 style={{ fontSize: '1.8rem' }}>Results</h3>
@@ -139,15 +208,16 @@ export default function PraiseSearch() {
                                     <p className="text-muted" style={{ fontSize: '0.95rem' }}>&quot;{item.lyrics}&quot;</p>
                                 </div>
                             </div>
-                            <a
-                                href={mediaType === "video" ? item.video_url : item.audio_url}
-                                target="_blank" rel="noopener noreferrer"
+                            <button
+                                onClick={() => setSelectedItem(item)}
                                 style={{
-                                    color: 'var(--primary)', fontWeight: 800, padding: '10px 20px',
-                                    border: '2px solid var(--primary)', borderRadius: '12px', fontSize: '0.85rem'
+                                    fontWeight: 800, padding: '10px 20px',
+                                    border: '2px solid var(--primary)', borderRadius: '12px', fontSize: '0.85rem',
+                                    backgroundColor: selectedItem?.id === item.id ? 'var(--primary)' : 'transparent',
+                                    color: selectedItem?.id === item.id ? 'white' : 'var(--primary)'
                                 }}>
-                                PLAY {mediaType.toUpperCase()}
-                            </a>
+                                {selectedItem?.id === item.id ? '▶ PLAYING' : 'PLAY'} {mediaType.toUpperCase()}
+                            </button>
                         </div>
                     )) : (
                         <div style={{ textAlign: 'center', padding: '100px', opacity: 0.5 }}>
