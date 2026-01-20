@@ -208,16 +208,41 @@ export default function PraiseSearch() {
                                     <p className="text-muted" style={{ fontSize: '0.95rem' }}>&quot;{item.lyrics}&quot;</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => setSelectedItem(item)}
-                                style={{
-                                    fontWeight: 800, padding: '10px 20px',
-                                    border: '2px solid var(--primary)', borderRadius: '12px', fontSize: '0.85rem',
-                                    backgroundColor: selectedItem?.id === item.id ? 'var(--primary)' : 'transparent',
-                                    color: selectedItem?.id === item.id ? 'white' : 'var(--primary)'
-                                }}>
-                                {selectedItem?.id === item.id ? '▶ PLAYING' : 'PLAY'} {mediaType.toUpperCase()}
-                            </button>
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <button
+                                    onClick={() => {
+                                        const content = {
+                                            id: item.id,
+                                            title: item.title,
+                                            type: "praise" as const,
+                                            video_url: item.video_url,
+                                            audio_url: item.audio_url
+                                        };
+                                        window.location.href = `/alarm?content=${encodeURIComponent(JSON.stringify(content))}`;
+                                    }}
+                                    style={{
+                                        fontWeight: 700,
+                                        padding: '10px 20px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.85rem',
+                                        backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                                        color: '#F59E0B',
+                                        border: '2px solid #FBBF24'
+                                    }}
+                                >
+                                    ⏰ ADD TO ALARM
+                                </button>
+                                <button
+                                    onClick={() => setSelectedItem(item)}
+                                    style={{
+                                        fontWeight: 800, padding: '10px 20px',
+                                        border: '2px solid var(--primary)', borderRadius: '12px', fontSize: '0.85rem',
+                                        backgroundColor: selectedItem?.id === item.id ? 'var(--primary)' : 'transparent',
+                                        color: selectedItem?.id === item.id ? 'white' : 'var(--primary)'
+                                    }}>
+                                    {selectedItem?.id === item.id ? '▶ PLAYING' : 'PLAY'} {mediaType.toUpperCase()}
+                                </button>
+                            </div>
                         </div>
                     )) : (
                         <div style={{ textAlign: 'center', padding: '100px', opacity: 0.5 }}>
