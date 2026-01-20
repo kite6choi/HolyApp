@@ -123,6 +123,7 @@ export default function AdminUpload() {
             setLyrics("");
             setDate("");
         } catch (error) {
+            console.error('Upload error:', error);
             const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
             setMessage(`❌ 오류 발생: ${errorMessage}`);
         } finally {
