@@ -22,6 +22,13 @@ export default function InstallPrompt() {
 
         console.log("[InstallPrompt] Device detected:", { ios, android, userAgent });
 
+        // 인앱 브라우저 감지
+        const isInAppBrowser = /kakaotalk|naver|line|fbav|fbios|fb_iab|instagram|inapp|webview/i.test(userAgent);
+        if (isInAppBrowser) {
+            console.log("[InstallPrompt] In-app browser detected, hiding install banner");
+            return;
+        }
+
         // 이미 설치되었는지 확인
         const standalone = window.matchMedia("(display-mode: standalone)").matches;
         const isInStandaloneMode = standalone || (window.navigator as any).standalone;

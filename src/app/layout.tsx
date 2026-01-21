@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import InstallPrompt from "./components/InstallPrompt";
+import InAppBrowserWarning from "./components/InAppBrowserWarning";
 import DebugInfo from "./components/DebugInfo";
 import "./globals.css";
 
@@ -82,6 +83,7 @@ export default function RootLayout({
           </div>
         </footer>
 
+        <InAppBrowserWarning />
         <InstallPrompt />
         <DebugInfo />
       </body>
