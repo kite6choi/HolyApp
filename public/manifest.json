@@ -5,7 +5,12 @@
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#2D5BFF",
+    "theme_color": "#10B981",
+    "orientation": "portrait-primary",
+    "categories": ["lifestyle", "religion"],
+    "lang": "ko",
+    "dir": "ltr",
+    "scope": "/",
     "icons": [
         {
             "src": "/church-logo.png",
@@ -16,7 +21,8 @@
         {
             "src": "/church-logo.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         }
     ]
 }

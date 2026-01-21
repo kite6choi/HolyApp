@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <ServiceWorkerRegister />
         <header style={{
           height: 'var(--header-height)',
           backgroundColor: 'var(--card-bg)',
