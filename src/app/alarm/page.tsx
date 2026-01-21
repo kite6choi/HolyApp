@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 
@@ -63,40 +63,18 @@ export default function AlarmSettings() {
         localStorage.setItem("alarmSettings", JSON.stringify(settings));
     }, [alarmTime, selectedContent, isAlarmActive]);
 
-    // 알람 체크 타이머
-    useEffect(() => {
-        if (!isAlarmActive || !selectedContent) return;
-
-        const checkAlarm = () => {
-            const now = new Date();
-            const [hours, minutes] = alarmTime.split(":");
-            const alarmDate = new Date();
-            alarmDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-            // 현재 시간과 알람 시간이 같은지 체크 (1분 단위)
-            if (
-                now.getHours() === alarmDate.getHours() &&
-                now.getMinutes() === alarmDate.getMinutes() &&
-                now.getSeconds() < 10 // 10초 이내에만 알람 울림
-            ) {
-                triggerAlarm();
-            }
-        };
-
-        const interval = setInterval(checkAlarm, 1000);
-        return () => clearInterval(interval);
-    }, [isAlarmActive, alarmTime, selectedContent]);
-
-    const requestNotificationPermission = async () => {
+    const requestNotificationPermission = useCallback(async () => {
         if ("Notification" in window && Notification.permission === "default") {
             const permission = await Notification.requestPermission();
             setNotificationPermission(permission);
             return permission;
         }
         return Notification.permission;
-    };
+    }, []);
 
-    const triggerAlarm = async () => {
+    const triggerAlarm = useCallback(async () => {
+        console.log("[알람] 알람이 울립니다!", selectedContent?.title);
+
         // 알림 권한 요청
         const permission = await requestNotificationPermission();
 
@@ -104,8 +82,8 @@ export default function AlarmSettings() {
             // 브라우저 알림 표시
             const notification = new Notification("홀리씨즈 알람", {
                 body: `${selectedContent.type === "sermon" ? "설교" : "찬양"}: ${selectedContent.title}`,
-                icon: "/icon-512x512.png",
-                badge: "/icon-192x192.png",
+                icon: "/app-icon.png",
+                badge: "/app-icon.png",
             });
 
             notification.onclick = () => {
@@ -119,19 +97,63 @@ export default function AlarmSettings() {
                 // 새 창에서 재생
                 window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
             }
+        } else {
+            console.warn("[알람] 알림 권한이 없습니다:", permission);
         }
 
         // 알람 자동 비활성화 (다음날 다시 울리게 하려면 이 부분 제거)
         // setIsAlarmActive(false);
-    };
+    }, [selectedContent, requestNotificationPermission]);
 
-    const handleActivateAlarm = async () => {
+    // 알람 체크 타이머
+    useEffect(() => {
+        if (!isAlarmActive || !selectedContent) {
+            console.log("[알람] 비활성화 상태 - 알람 체크 안 함");
+            return;
+        }
+
+        console.log(`[알람] 활성화됨 - ${alarmTime}에 "${selectedContent.title}" 재생 예정`);
+
+        const checkAlarm = () => {
+            const now = new Date();
+            const [hours, minutes] = alarmTime.split(":");
+            const alarmHour = parseInt(hours);
+            const alarmMinute = parseInt(minutes);
+
+            const currentTime = `${now.getHours()}:${now.getMinutes()}`;
+            const targetTime = `${alarmHour}:${alarmMinute}`;
+
+            // 현재 시간과 알람 시간이 같은지 체크 (1분 단위)
+            if (
+                now.getHours() === alarmHour &&
+                now.getMinutes() === alarmMinute &&
+                now.getSeconds() < 10 // 10초 이내에만 알람 울림
+            ) {
+                console.log(`[알람] 시간 일치! ${currentTime} === ${targetTime}`);
+                triggerAlarm();
+            }
+        };
+
+        const interval = setInterval(checkAlarm, 1000);
+        return () => {
+            console.log("[알람] 타이머 정리");
+            clearInterval(interval);
+        };
+    }, [isAlarmActive, alarmTime, selectedContent, triggerAlarm]);
+
+    const handleActivateAlarm = useCallback(async () => {
         if (!isAlarmActive && selectedContent) {
             // 알람 활성화 시 알림 권한 요청
-            await requestNotificationPermission();
+            const permission = await requestNotificationPermission();
+            if (permission === "granted") {
+                console.log("[알람] 알림 권한 허용됨");
+            } else {
+                console.warn("[알람] 알림 권한 거부됨:", permission);
+            }
         }
         setIsAlarmActive(!isAlarmActive);
-    };
+        console.log("[알람] 알람 상태 전환:", !isAlarmActive ? "활성화" : "비활성화");
+    }, [isAlarmActive, selectedContent, requestNotificationPermission]);
 
     return (
         <div className="container fade-in" style={{ padding: '80px 24px' }}>
