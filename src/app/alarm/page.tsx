@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { supabase } from "@/app/lib/supabase";
 
 interface AlarmSettings {
     alarmTime: string;
@@ -152,7 +153,7 @@ export default function AlarmSettings() {
                 </h2>
                 <p className="text-muted" style={{ fontSize: '1.2rem', maxWidth: '600px' }}>
                     매일 아침 은혜로운 말씀과 찬양으로 하루를 시작하세요.
-                    원하는 시간과 콘텐츠를 설정하면 알람이 울립니다.
+                    시간을 설정하고 오늘의 콘텐츠를 선택하면 알람이 울립니다.
                 </p>
             </header>
 
@@ -300,22 +301,55 @@ export default function AlarmSettings() {
                             </>
                         ) : (
                             <>
-                                <p className="text-muted">재생할 콘텐츠를 <br />검색해서 선택해 주세요.</p>
-                                <div style={{ display: 'flex', gap: '12px' }}>
-                                    <a href={`/search/${contentType}`} className="btn-primary" style={{ padding: '12px 24px', fontSize: '0.8rem' }}>
-                                        SEARCH {contentType.toUpperCase()}
-                                    </a>
+                                <div style={{ fontSize: '3rem', marginBottom: '20px' }}>
+                                    {contentType === "sermon" ? "📖" : "🎵"}
                                 </div>
+                                <p className="text-muted">오늘의 {contentType === "sermon" ? "설교" : "찬양"}를<br />자동으로 선택해 드립니다.</p>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const { data, error } = await supabase
+                                                .from(contentType === "sermon" ? "sermons" : "praises")
+                                                .select("*")
+                                                .limit(100);
+
+                                            if (error) throw error;
+
+                                            if (data && data.length > 0) {
+                                                // 랜덤으로 하나 선택
+                                                const randomIndex = Math.floor(Math.random() * data.length);
+                                                const randomItem = data[randomIndex];
+
+                                                setSelectedContent({
+                                                    id: randomItem.id,
+                                                    title: randomItem.title,
+                                                    type: contentType,
+                                                    video_url: randomItem.video_url,
+                                                    audio_url: randomItem.audio_url
+                                                });
+                                            }
+                                        } catch (error) {
+                                            console.error("Error fetching random content:", error);
+                                            alert("콘텐츠를 불러오는데 실패했습니다.");
+                                        }
+                                    }}
+                                    className="btn-primary"
+                                    style={{ padding: '12px 24px', fontSize: '0.85rem' }}
+                                >
+                                    🎲 오늘의 {contentType === "sermon" ? "설교" : "찬양"} 선택
+                                </button>
                             </>
                         )}
                     </div>
 
                     <div style={{ padding: '20px', backgroundColor: 'rgba(45, 91, 255, 0.05)', borderRadius: '16px' }}>
                         <p style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700 }}>
-                            💡 Hint:
+                            💡 알람 작동 방식:
                         </p>
-                        <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '4px' }}>
-                            웹 브라우저 정책상 탭이 활성화되어 있어야 음악이 자동으로 재생될 수 있습니다.
+                        <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '8px', lineHeight: '1.6' }}>
+                            • 매일 같은 시간에 알람이 울립니다<br />
+                            • 브라우저가 열려있어야 알람이 작동합니다<br />
+                            • 알림 권한을 허용해 주세요
                         </p>
                     </div>
                 </section>
