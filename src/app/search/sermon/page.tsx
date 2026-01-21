@@ -224,29 +224,6 @@ export default function SermonSearch() {
                             </div>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button
-                                    onClick={() => {
-                                        const content = {
-                                            id: item.id,
-                                            title: item.title,
-                                            type: "sermon" as const,
-                                            video_url: item.video_url,
-                                            audio_url: item.audio_url
-                                        };
-                                        window.location.href = `/alarm?content=${encodeURIComponent(JSON.stringify(content))}`;
-                                    }}
-                                    style={{
-                                        fontWeight: 700,
-                                        padding: '10px 20px',
-                                        borderRadius: '12px',
-                                        fontSize: '0.85rem',
-                                        backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                                        color: '#F59E0B',
-                                        border: '2px solid #FBBF24'
-                                    }}
-                                >
-                                    ⏰ ADD TO ALARM
-                                </button>
-                                <button
                                     onClick={() => setSelectedItem(item)}
                                     style={{
                                         fontWeight: 800, padding: '10px 20px',
