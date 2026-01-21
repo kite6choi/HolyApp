@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import InstallPrompt from "./components/InstallPrompt";
+import DebugInfo from "./components/DebugInfo";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -82,6 +83,7 @@ export default function RootLayout({
         </footer>
 
         <InstallPrompt />
+        <DebugInfo />
       </body>
     </html>
   );
