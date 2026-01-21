@@ -12,6 +12,7 @@ export default function InstallPrompt() {
     const [showBanner, setShowBanner] = useState(false);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     useEffect(() => {
         // iOS 감지
@@ -59,7 +60,15 @@ export default function InstallPrompt() {
             setShowBanner(true);
         };
 
+        // appinstalled 이벤트 리스너 (설치 완료 감지)
+        const handleAppInstalled = () => {
+            console.log("[InstallPrompt] App installed successfully!");
+            setShowBanner(false);
+            setShowSuccessMessage(true);
+        };
+
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        window.addEventListener("appinstalled", handleAppInstalled);
 
         // 모바일 기기라면 무조건 배너 표시 (테스트용)
         const isMobile = ios || android || window.innerWidth < 768;
@@ -72,6 +81,7 @@ export default function InstallPrompt() {
 
         return () => {
             window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+            window.removeEventListener("appinstalled", handleAppInstalled);
         };
     }, []);
 
@@ -98,6 +108,144 @@ export default function InstallPrompt() {
         localStorage.setItem("install-prompt-dismissed", "true");
     };
 
+    const handleCloseSuccessMessage = () => {
+        setShowSuccessMessage(false);
+    };
+
+    // 성공 메시지 표시
+    if (showSuccessMessage) {
+        return (
+            <div
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: "rgba(0, 0, 0, 0.95)",
+                    zIndex: 99999,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "20px",
+                    animation: "fadeIn 0.3s ease-out",
+                }}
+            >
+                <style jsx>{`
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.1); }
+                    }
+                    @keyframes bounce {
+                        0%, 100% { transform: translateY(0); }
+                        50% { transform: translateY(-10px); }
+                    }
+                `}</style>
+
+                <div
+                    style={{
+                        maxWidth: "500px",
+                        width: "100%",
+                        textAlign: "center",
+                        color: "white",
+                    }}
+                >
+                    {/* 성공 아이콘 */}
+                    <div
+                        style={{
+                            fontSize: "5rem",
+                            marginBottom: "30px",
+                            animation: "pulse 1s ease-in-out infinite",
+                        }}
+                    >
+                        🎉
+                    </div>
+
+                    {/* 제목 */}
+                    <h2
+                        style={{
+                            fontSize: "2.5rem",
+                            fontWeight: 800,
+                            marginBottom: "20px",
+                            color: "#10B981",
+                        }}
+                    >
+                        설치 완료!
+                    </h2>
+
+                    {/* 설명 */}
+                    <p
+                        style={{
+                            fontSize: "1.2rem",
+                            lineHeight: "1.8",
+                            marginBottom: "40px",
+                            color: "#E5E7EB",
+                        }}
+                    >
+                        이제 홈 화면에서<br />
+                        <strong style={{ color: "#10B981" }}>HolySeeds</strong> 아이콘을 찾아보세요!
+                    </p>
+
+                    {/* 홈 버튼 아이콘 안내 */}
+                    <div
+                        style={{
+                            backgroundColor: "rgba(16, 185, 129, 0.1)",
+                            border: "2px solid #10B981",
+                            borderRadius: "20px",
+                            padding: "30px 20px",
+                            marginBottom: "40px",
+                        }}
+                    >
+                        <div
+                            style={{
+                                fontSize: "4rem",
+                                marginBottom: "20px",
+                                animation: "bounce 2s ease-in-out infinite",
+                            }}
+                        >
+                            🏠
+                        </div>
+                        <p
+                            style={{
+                                fontSize: "1.1rem",
+                                color: "#10B981",
+                                fontWeight: 700,
+                                lineHeight: "1.8",
+                            }}
+                        >
+                            <strong style={{ fontSize: "1.3rem" }}>지금 홈 버튼(🏠)을 눌러</strong><br />
+                            HolySeeds 아이콘을 찾아주세요!
+                        </p>
+                    </div>
+
+                    {/* 확인 버튼 */}
+                    <button
+                        onClick={handleCloseSuccessMessage}
+                        style={{
+                            width: "100%",
+                            padding: "18px",
+                            backgroundColor: "#10B981",
+                            border: "none",
+                            borderRadius: "16px",
+                            fontSize: "1.2rem",
+                            fontWeight: 800,
+                            color: "white",
+                            cursor: "pointer",
+                            boxShadow: "0 10px 30px rgba(16, 185, 129, 0.3)",
+                        }}
+                    >
+                        확인
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // 설치 배너 표시
     if (!showBanner || isStandalone) {
         return null;
     }
