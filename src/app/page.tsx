@@ -92,32 +92,50 @@ export default function Home() {
           </a>
         ))}
 
-        {/* Placeholder for expansion - Designed to look premium */}
-        <div className="glass-card" style={{
+        {/* App Install Guide */}
+        <a href="/install" className="glass-card" style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
+          gap: '24px',
+          minHeight: '380px',
           borderStyle: 'dashed',
           borderColor: 'var(--primary)',
-          backgroundColor: 'transparent',
-          opacity: 0.3,
-          textAlign: 'center',
-          minHeight: '380px'
+          borderWidth: '2px'
         }}>
           <div style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            border: '2px dashed var(--primary)',
+            width: '72px',
+            height: '72px',
+            borderRadius: '20px',
+            background: 'linear-gradient(135deg, #8B5CF6, #A78BFA)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.5rem',
-            marginBottom: '20px'
-          }}>＋</div>
-          <p style={{ fontWeight: 700, letterSpacing: '0.1em' }}>COMING SOON</p>
-        </div>
+            fontSize: '2.2rem',
+            color: 'white',
+            boxShadow: '0 15px 30px -10px rgba(0,0,0,0.2)'
+          }}>
+            📱
+          </div>
+          <div style={{ marginTop: '20px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '0.2em' }}>INSTALL</span>
+            <h3 style={{ fontSize: '2rem', marginTop: '8px', marginBottom: '16px' }}>앱 설치 가이드</h3>
+            <p className="text-muted" style={{ fontSize: '1.05rem', lineHeight: '1.7' }}>
+              모바일에 앱으로 설치하고 더 편리하게 사용하세요. QR 코드로 쉽게 접속하실 수 있습니다.
+            </p>
+          </div>
+          <div style={{
+            marginTop: 'auto',
+            fontWeight: 800,
+            fontSize: '0.85rem',
+            letterSpacing: '0.1em',
+            color: 'var(--primary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            VIEW GUIDE <span style={{ fontSize: '1.2rem' }}>→</span>
+          </div>
+        </a>
       </div>
     </div>
   );

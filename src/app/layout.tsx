@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
+import InstallPrompt from "./components/InstallPrompt";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -79,6 +80,8 @@ export default function RootLayout({
             <a href="/admin" style={{ fontSize: '0.6rem', marginTop: '20px', display: 'inline-block', opacity: 0.3 }}>ADMIN LOGIN</a>
           </div>
         </footer>
+
+        <InstallPrompt />
       </body>
     </html>
   );
