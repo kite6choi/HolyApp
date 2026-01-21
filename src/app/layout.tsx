@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   title: "HolySeeds Church | 홀리씨즈교회",
   description: "언제 어디서나 함께하는 설교와 찬양, 홀리씨즈교회 앱입니다.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/app-icon.png",
+    apple: "/app-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
