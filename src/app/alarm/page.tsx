@@ -22,6 +22,7 @@ export default function AlarmSettings() {
     const [contentType, setContentType] = useState<"sermon" | "praise">("sermon");
     const [isAlarmActive, setIsAlarmActive] = useState(false);
     const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
+    const [lastTriggered, setLastTriggered] = useState<string>(""); // 마지막으로 알람이 울린 시간 (HH:MM 형식)
 
     // localStorage에서 알람 설정 불러오기
     useEffect(() => {
@@ -73,14 +74,20 @@ export default function AlarmSettings() {
     }, []);
 
     const triggerAlarm = useCallback(async () => {
-        console.log("[알람] 알람이 울립니다!", selectedContent?.title);
+        const now = new Date();
+        const currentTimeKey = `${now.getHours()}:${now.getMinutes()}`;
+
+        console.log("[알람] 🔔 알람이 울립니다!", selectedContent?.title);
+
+        // 현재 분에 이미 알람이 울렸으면 중복 실행 방지
+        setLastTriggered(currentTimeKey);
 
         // 알림 권한 요청
         const permission = await requestNotificationPermission();
 
         if (permission === "granted" && selectedContent) {
             // 브라우저 알림 표시
-            const notification = new Notification("홀리씨즈 알람", {
+            const notification = new Notification("🔔 홀리씨즈 알람", {
                 body: `${selectedContent.type === "sermon" ? "설교" : "찬양"}: ${selectedContent.title}`,
                 icon: "/app-icon.png",
                 badge: "/app-icon.png",
@@ -98,7 +105,7 @@ export default function AlarmSettings() {
                 window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
             }
         } else {
-            console.warn("[알람] 알림 권한이 없습니다:", permission);
+            console.warn("[알람] ⚠️ 알림 권한이 없습니다:", permission);
         }
 
         // 알람 자동 비활성화 (다음날 다시 울리게 하려면 이 부분 제거)
@@ -108,11 +115,11 @@ export default function AlarmSettings() {
     // 알람 체크 타이머
     useEffect(() => {
         if (!isAlarmActive || !selectedContent) {
-            console.log("[알람] 비활성화 상태 - 알람 체크 안 함");
+            console.log("[알람] ⏸️ 비활성화 상태 - 알람 체크 안 함");
             return;
         }
 
-        console.log(`[알람] 활성화됨 - ${alarmTime}에 "${selectedContent.title}" 재생 예정`);
+        console.log(`[알람] ✅ 활성화됨 - ${alarmTime}에 "${selectedContent.title}" 재생 예정`);
 
         const checkAlarm = () => {
             const now = new Date();
@@ -120,26 +127,28 @@ export default function AlarmSettings() {
             const alarmHour = parseInt(hours);
             const alarmMinute = parseInt(minutes);
 
-            const currentTime = `${now.getHours()}:${now.getMinutes()}`;
-            const targetTime = `${alarmHour}:${alarmMinute}`;
+            const currentTimeKey = `${now.getHours()}:${now.getMinutes()}`;
+            const targetTimeKey = `${alarmHour}:${alarmMinute}`;
 
             // 현재 시간과 알람 시간이 같은지 체크 (1분 단위)
-            if (
-                now.getHours() === alarmHour &&
-                now.getMinutes() === alarmMinute &&
-                now.getSeconds() < 10 // 10초 이내에만 알람 울림
-            ) {
-                console.log(`[알람] 시간 일치! ${currentTime} === ${targetTime}`);
+            if (now.getHours() === alarmHour && now.getMinutes() === alarmMinute) {
+                // 이미 이 시간에 알람이 울렸는지 확인
+                if (lastTriggered === currentTimeKey) {
+                    // 중복 실행 방지 (같은 분에 이미 울림)
+                    return;
+                }
+
+                console.log(`[알람] ⏰ 시간 일치! ${currentTimeKey} === ${targetTimeKey} (초: ${now.getSeconds()})`);
                 triggerAlarm();
             }
         };
 
         const interval = setInterval(checkAlarm, 1000);
         return () => {
-            console.log("[알람] 타이머 정리");
+            console.log("[알람] 🧹 타이머 정리");
             clearInterval(interval);
         };
-    }, [isAlarmActive, alarmTime, selectedContent, triggerAlarm]);
+    }, [isAlarmActive, alarmTime, selectedContent, triggerAlarm, lastTriggered]);
 
     const handleActivateAlarm = useCallback(async () => {
         if (!isAlarmActive && selectedContent) {
@@ -255,20 +264,47 @@ export default function AlarmSettings() {
                         </div>
                     )}
 
-                    <button
-                        className="btn-primary"
-                        onClick={handleActivateAlarm}
-                        disabled={!selectedContent}
-                        style={{
-                            marginTop: '10px',
-                            backgroundColor: isAlarmActive ? 'var(--accent)' : 'var(--primary)',
-                            background: isAlarmActive ? 'linear-gradient(135deg, #FF4D00, #FFAD00)' : 'var(--primary)',
-                            opacity: !selectedContent ? 0.5 : 1,
-                            cursor: !selectedContent ? 'not-allowed' : 'pointer'
-                        }}
-                    >
-                        {isAlarmActive ? "DEACTIVATE ALARM" : "ACTIVATE ALARM"}
-                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <button
+                            className="btn-primary"
+                            onClick={handleActivateAlarm}
+                            disabled={!selectedContent}
+                            style={{
+                                marginTop: '10px',
+                                backgroundColor: isAlarmActive ? 'var(--accent)' : 'var(--primary)',
+                                background: isAlarmActive ? 'linear-gradient(135deg, #FF4D00, #FFAD00)' : 'var(--primary)',
+                                opacity: !selectedContent ? 0.5 : 1,
+                                cursor: !selectedContent ? 'not-allowed' : 'pointer'
+                            }}
+                        >
+                            {isAlarmActive ? "DEACTIVATE ALARM" : "ACTIVATE ALARM"}
+                        </button>
+
+                        <button
+                            onClick={async () => {
+                                if (!selectedContent) {
+                                    alert("먼저 콘텐츠를 선택해 주세요!");
+                                    return;
+                                }
+                                console.log("[알람] 🧪 테스트 알람 실행");
+                                await triggerAlarm();
+                            }}
+                            disabled={!selectedContent}
+                            style={{
+                                padding: '12px',
+                                borderRadius: '12px',
+                                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                                border: '2px solid #8B5CF6',
+                                color: '#8B5CF6',
+                                fontWeight: 700,
+                                fontSize: '0.85rem',
+                                cursor: !selectedContent ? 'not-allowed' : 'pointer',
+                                opacity: !selectedContent ? 0.5 : 1
+                            }}
+                        >
+                            🧪 TEST ALARM NOW
+                        </button>
+                    </div>
 
                     {isAlarmActive && selectedContent && (
                         <div style={{ padding: '16px', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', marginTop: '10px' }}>
