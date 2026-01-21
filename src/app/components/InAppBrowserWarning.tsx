@@ -165,7 +165,10 @@ export default function InAppBrowserWarning() {
                             화면 <strong>우측 하단</strong>의 <strong style={{ fontSize: "1.2rem" }}>⋮</strong> (점 3개) 클릭
                         </li>
                         <li>
-                            <strong>"Chrome으로 열기"</strong> 선택
+                            <strong>"다른 브라우저로 열기"</strong> 선택
+                        </li>
+                        <li>
+                            <strong>Chrome</strong> 선택
                         </li>
                         <li>자동으로 설치 안내가 표시됩니다!</li>
                     </ol>
