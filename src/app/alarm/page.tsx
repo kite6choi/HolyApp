@@ -101,8 +101,17 @@ export default function AlarmSettings() {
             // 콘텐츠 재생 페이지로 이동
             const url = selectedContent.video_url || selectedContent.audio_url;
             if (url) {
-                // 새 창에서 재생
-                window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
+                // 모바일/PWA에서는 같은 창에서 이동
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+                if (isMobile || isPWA) {
+                    // 모바일/PWA: 같은 창에서 이동
+                    window.location.href = `/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`;
+                } else {
+                    // 데스크톱: 새 창에서 재생
+                    window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
+                }
             }
         } else {
             console.warn("[알람] ⚠️ 알림 권한이 없습니다:", permission);
@@ -281,7 +290,9 @@ export default function AlarmSettings() {
                         </button>
 
                         <button
-                            onClick={async () => {
+                            onClick={async (e) => {
+                                e.preventDefault();
+                                alert("🧪 테스트 시작!");
                                 console.log("[테스트] 버튼 클릭됨");
                                 console.log("[테스트] selectedContent:", selectedContent);
 
@@ -323,12 +334,30 @@ export default function AlarmSettings() {
                                             const url = selectedContent.video_url || selectedContent.audio_url;
                                             if (url) {
                                                 console.log("[테스트] 재생 페이지 열기:", url);
-                                                window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
+
+                                                // 모바일/PWA 감지
+                                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                                const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+                                                console.log("[테스트] 모바일:", isMobile, "PWA:", isPWA);
+
+                                                if (isMobile || isPWA) {
+                                                    // 모바일/PWA: 같은 창에서 이동
+                                                    console.log("[테스트] 모바일/PWA 모드 - 같은 창에서 이동");
+                                                    setTimeout(() => {
+                                                        window.location.href = `/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`;
+                                                    }, 1000); // alert 후 1초 뒤 이동
+                                                    alert("✅ 테스트 알람 성공!\n콘텐츠 재생 페이지로 이동합니다.");
+                                                } else {
+                                                    // 데스크톱: 새 창에서 재생
+                                                    console.log("[테스트] 데스크톱 모드 - 새 창 열기");
+                                                    window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
+                                                    alert("✅ 테스트 알람 성공!\n새 창에서 콘텐츠가 재생됩니다.");
+                                                }
                                             } else {
                                                 console.warn("[테스트] URL이 없습니다");
+                                                alert("⚠️ 재생 가능한 미디어가 없습니다.");
                                             }
-
-                                            alert("✅ 테스트 알람 성공!\n새 창에서 콘텐츠가 재생됩니다.");
                                         } else {
                                             console.error("[테스트] 알림 권한 거부됨:", Notification.permission);
                                             alert("⚠️ 알림 권한이 필요합니다!\n브라우저 설정에서 알림을 허용해 주세요.");
@@ -352,7 +381,12 @@ export default function AlarmSettings() {
                                 fontWeight: 700,
                                 fontSize: '0.85rem',
                                 cursor: !selectedContent ? 'not-allowed' : 'pointer',
-                                opacity: !selectedContent ? 0.5 : 1
+                                opacity: !selectedContent ? 0.5 : 1,
+                                WebkitTapHighlightColor: 'rgba(139, 92, 246, 0.3)',
+                                touchAction: 'manipulation'
+                            }}
+                            onTouchStart={(e) => {
+                                console.log("[테스트] 터치 감지됨!");
                             }}
                         >
                             🧪 TEST ALARM NOW
