@@ -162,7 +162,7 @@ export default function InAppBrowserWarning() {
                         }}
                     >
                         <li>
-                            우측 상단 <strong>⋮</strong> (점 3개) 클릭
+                            화면 <strong>우측 하단</strong>의 <strong style={{ fontSize: "1.2rem" }}>⋮</strong> (점 3개) 클릭
                         </li>
                         <li>
                             <strong>"Chrome으로 열기"</strong> 선택
