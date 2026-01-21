@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(nul)",
+      "Bash(dir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix ESLint errors for Vercel deployment\n\n- Replace TypeScript ''any'' types with proper type definitions\n- Replace <a> tags with Next.js Link components\n- Add eslint-disable comments for React Hook dependencies\n- Fix unescaped HTML entities\n- Add CLAUDE.md documentation\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push)",
+      "Bash(cat:*)",
+      "Bash(gh api:*)",
+      "Bash(git commit:*)",
+      "Bash(npm install:*)",
+      "Bash(echo:*)",
+      "Bash(npm uninstall:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -5,9 +5,14 @@ import { useState, useEffect } from "react";
 export default function InAppBrowserWarning() {
     const [showWarning, setShowWarning] = useState(false);
     const [browserName, setBrowserName] = useState("");
+    const [isIOS, setIsIOS] = useState(false);
 
     useEffect(() => {
         const userAgent = window.navigator.userAgent.toLowerCase();
+
+        // iOS/Android 감지
+        const ios = /iphone|ipad|ipod/.test(userAgent);
+        setIsIOS(ios);
 
         // 인앱 브라우저 감지
         const isKakao = /kakaotalk/i.test(userAgent);
@@ -39,7 +44,7 @@ export default function InAppBrowserWarning() {
         if (detected) {
             setBrowserName(name);
             setShowWarning(true);
-            console.log(`[InAppBrowserWarning] ${name} 인앱 브라우저 감지됨`);
+            console.log(`[InAppBrowserWarning] ${name} 인앱 브라우저 감지됨 (${ios ? 'iOS' : 'Android'})`);
         }
     }, []);
 
@@ -113,7 +118,7 @@ export default function InAppBrowserWarning() {
                         color: "#10B981",
                     }}
                 >
-                    Chrome으로 열어주세요
+                    {isIOS ? "Safari로 열어주세요" : "Chrome으로 열어주세요"}
                 </h2>
 
                 {/* 설명 */}
@@ -168,7 +173,7 @@ export default function InAppBrowserWarning() {
                             <strong>"다른 브라우저로 열기"</strong> 선택
                         </li>
                         <li>
-                            <strong>Chrome</strong> 선택
+                            <strong>{isIOS ? "Safari" : "Chrome"}</strong> 선택
                         </li>
                         <li>자동으로 설치 안내가 표시됩니다!</li>
                     </ol>
@@ -194,7 +199,7 @@ export default function InAppBrowserWarning() {
                         또는
                     </div>
                     <div style={{ fontSize: "0.9rem", color: "#666", lineHeight: "1.6" }}>
-                        Chrome 앱을 직접 열고<br />
+                        {isIOS ? "Safari 앱" : "Chrome 앱"}을 직접 열고<br />
                         <code
                             style={{
                                 backgroundColor: "rgba(0, 0, 0, 0.05)",
