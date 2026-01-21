@@ -282,12 +282,65 @@ export default function AlarmSettings() {
 
                         <button
                             onClick={async () => {
+                                console.log("[테스트] 버튼 클릭됨");
+                                console.log("[테스트] selectedContent:", selectedContent);
+
                                 if (!selectedContent) {
                                     alert("먼저 콘텐츠를 선택해 주세요!");
                                     return;
                                 }
-                                console.log("[알람] 🧪 테스트 알람 실행");
-                                await triggerAlarm();
+
+                                try {
+                                    console.log("[테스트] 🧪 테스트 알람 실행 시작");
+
+                                    // 알림 권한 확인
+                                    if ("Notification" in window) {
+                                        console.log("[테스트] 현재 알림 권한:", Notification.permission);
+
+                                        if (Notification.permission === "default") {
+                                            console.log("[테스트] 알림 권한 요청 중...");
+                                            const permission = await Notification.requestPermission();
+                                            console.log("[테스트] 권한 결과:", permission);
+                                        }
+
+                                        if (Notification.permission === "granted") {
+                                            console.log("[테스트] 알림 생성 중...");
+                                            const notification = new Notification("🧪 테스트 알람", {
+                                                body: `${selectedContent.type === "sermon" ? "설교" : "찬양"}: ${selectedContent.title}`,
+                                                icon: "/app-icon.png",
+                                                badge: "/app-icon.png",
+                                            });
+
+                                            notification.onclick = () => {
+                                                console.log("[테스트] 알림 클릭됨");
+                                                window.focus();
+                                                notification.close();
+                                            };
+
+                                            console.log("[테스트] 알림 생성 완료");
+
+                                            // 재생 페이지 열기
+                                            const url = selectedContent.video_url || selectedContent.audio_url;
+                                            if (url) {
+                                                console.log("[테스트] 재생 페이지 열기:", url);
+                                                window.open(`/alarm/play?content=${encodeURIComponent(JSON.stringify(selectedContent))}`, "_blank");
+                                            } else {
+                                                console.warn("[테스트] URL이 없습니다");
+                                            }
+
+                                            alert("✅ 테스트 알람 성공!\n새 창에서 콘텐츠가 재생됩니다.");
+                                        } else {
+                                            console.error("[테스트] 알림 권한 거부됨:", Notification.permission);
+                                            alert("⚠️ 알림 권한이 필요합니다!\n브라우저 설정에서 알림을 허용해 주세요.");
+                                        }
+                                    } else {
+                                        console.error("[테스트] 브라우저가 알림을 지원하지 않습니다");
+                                        alert("⚠️ 이 브라우저는 알림을 지원하지 않습니다.");
+                                    }
+                                } catch (error) {
+                                    console.error("[테스트] 오류 발생:", error);
+                                    alert("❌ 테스트 알람 실행 중 오류가 발생했습니다.\nF12를 눌러 콘솔을 확인해 주세요.");
+                                }
                             }}
                             disabled={!selectedContent}
                             style={{
