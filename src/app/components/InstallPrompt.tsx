@@ -17,25 +17,36 @@ export default function InstallPrompt() {
         // iOS 감지
         const userAgent = window.navigator.userAgent.toLowerCase();
         const ios = /iphone|ipad|ipod/.test(userAgent);
+        const android = /android/.test(userAgent);
         setIsIOS(ios);
+
+        console.log("[InstallPrompt] Device detected:", { ios, android, userAgent });
 
         // 이미 설치되었는지 확인
         const standalone = window.matchMedia("(display-mode: standalone)").matches;
-        setIsStandalone(standalone);
+        const isInStandaloneMode = standalone || (window.navigator as any).standalone;
+        setIsStandalone(isInStandaloneMode);
+
+        console.log("[InstallPrompt] Standalone mode:", isInStandaloneMode);
 
         // 이미 설치된 경우 배너 표시 안 함
-        if (standalone) {
+        if (isInStandaloneMode) {
+            console.log("[InstallPrompt] Already in standalone mode, hiding banner");
             return;
         }
 
         // 이전에 배너를 닫았는지 확인
         const dismissed = localStorage.getItem("install-prompt-dismissed");
-        if (dismissed) {
-            return;
-        }
+        console.log("[InstallPrompt] Previously dismissed:", dismissed);
+
+        // 테스트를 위해 주석 처리 - 나중에 활성화
+        // if (dismissed) {
+        //     return;
+        // }
 
         // beforeinstallprompt 이벤트 리스너 (Android/Chrome)
         const handleBeforeInstallPrompt = (e: Event) => {
+            console.log("[InstallPrompt] beforeinstallprompt event fired!");
             e.preventDefault();
             setDeferredPrompt(e as BeforeInstallPromptEvent);
             setShowBanner(true);
@@ -43,11 +54,13 @@ export default function InstallPrompt() {
 
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
-        // iOS는 beforeinstallprompt가 없으므로 수동으로 표시
-        if (ios && !standalone) {
+        // 모바일 기기라면 무조건 배너 표시 (테스트용)
+        const isMobile = ios || android || window.innerWidth < 768;
+        if (isMobile && !isInStandaloneMode && !dismissed) {
+            console.log("[InstallPrompt] Mobile detected, showing banner");
             setTimeout(() => {
                 setShowBanner(true);
-            }, 2000); // 2초 후 표시
+            }, 1000); // 1초 후 표시
         }
 
         return () => {
