@@ -28,10 +28,10 @@ export default function Home() {
         </h4>
         <h2 style={{ fontSize: '4.5rem', marginBottom: '32px', fontWeight: 800 }}>
           말씀과 찬양으로 <br />
-          <span className="text-gradient">일상을 풍요롭게.</span>
+          <span className="text-gradient">일상을 은혜롭게.</span>
         </h2>
         <p className="text-muted" style={{ fontSize: '1.25rem', lineHeight: '1.8', maxWidth: '600px' }}>
-          홀리씨즈교회 앱은 당신의 영성을 위한 가장 세련된 도구입니다.
+          홀리씨즈교회앱은 당신의 영성을 위한 축복의 통로 입니다.
           언제 어디서나 깊은 은혜의 시간을 경험해 보세요.
         </p>
       </section>
