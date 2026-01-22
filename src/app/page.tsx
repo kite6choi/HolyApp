@@ -16,14 +16,6 @@ export default function Home() {
       icon: "🎵",
       link: "/search/praise",
       gradient: "linear-gradient(135deg, #10B981, #34D399)"
-    },
-    {
-      title: "Alarm",
-      subtitle: "알람 설정",
-      description: "은혜로운 말씀과 함께 시작하는 특별한 아침을 예약하세요.",
-      icon: "⏰",
-      link: "/alarm",
-      gradient: "linear-gradient(135deg, #FBBF24, #F59E0B)"
     }
   ];
 
