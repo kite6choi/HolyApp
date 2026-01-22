@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 // Image metadata
-export const alt = '홀리씨즈교회 - 말씀과 찬양으로 일상을 은혜롭게';
+export const alt = '홀리씨즈교회 앱 - 말씀과 찬양으로 일상을 은혜롭게';
 export const size = {
   width: 1200,
   height: 630,
@@ -43,7 +43,7 @@ export default async function Image() {
           {/* 아이콘 */}
           <div
             style={{
-              fontSize: '120px',
+              fontSize: '240px',
               marginBottom: '40px',
               display: 'flex',
             }}
@@ -54,7 +54,7 @@ export default async function Image() {
           {/* 교회 이름 */}
           <div
             style={{
-              fontSize: '72px',
+              fontSize: '144px',
               fontWeight: 900,
               background: 'linear-gradient(135deg, #059669, #10B981)',
               backgroundClip: 'text',
@@ -64,13 +64,13 @@ export default async function Image() {
               letterSpacing: '-0.05em',
             }}
           >
-            홀리씨즈교회
+            홀리씨즈교회 앱
           </div>
 
           {/* 영문명 */}
           <div
             style={{
-              fontSize: '32px',
+              fontSize: '64px',
               fontWeight: 700,
               color: '#10B981',
               letterSpacing: '0.2em',
@@ -84,7 +84,7 @@ export default async function Image() {
           {/* 슬로건 */}
           <div
             style={{
-              fontSize: '42px',
+              fontSize: '84px',
               fontWeight: 800,
               color: '#333',
               textAlign: 'center',
@@ -113,7 +113,7 @@ export default async function Image() {
               display: 'flex',
               gap: '40px',
               marginTop: '60px',
-              fontSize: '48px',
+              fontSize: '96px',
             }}
           >
             <div style={{ display: 'flex' }}>📖</div>
@@ -125,7 +125,7 @@ export default async function Image() {
         <div
           style={{
             marginTop: '40px',
-            fontSize: '28px',
+            fontSize: '56px',
             fontWeight: 700,
             color: 'white',
             display: 'flex',

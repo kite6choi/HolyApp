@@ -33,7 +33,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "홀리씨즈교회 - 말씀과 찬양으로 일상을 은혜롭게",
+        alt: "홀리씨즈교회 앱 - 말씀과 찬양으로 일상을 은혜롭게",
       },
     ],
   },
