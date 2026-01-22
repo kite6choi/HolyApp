@@ -12,7 +12,7 @@ export default function Home() {
     {
       title: "Praise",
       subtitle: "찬양 검색",
-      description: "마음을 여는 아름다운 찬양의 제목과 가사를 쉽고 빠르게 찾아보세요.",
+      description: "마음을 여는 아름다운 찬양을 제목이나 가사로 쉽게 찾아보세요.",
       icon: "🎵",
       link: "/search/praise",
       gradient: "linear-gradient(135deg, #10B981, #34D399)"
