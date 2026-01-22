@@ -8,8 +8,9 @@ import DebugInfo from "./components/DebugInfo";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://holyseeds-app.vercel.app"),
   title: "HolySeeds Church | 홀리씨즈교회",
-  description: "언제 어디서나 함께하는 설교와 찬양, 홀리씨즈교회 앱입니다.",
+  description: "말씀과 찬양으로 일상을 은혜롭게. 언제 어디서나 설교와 찬양을 만나보세요.",
   manifest: "/manifest.json",
   icons: {
     icon: "/app-icon.png",
@@ -19,6 +20,28 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "HolySeeds",
+  },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "https://holyseeds-app.vercel.app",
+    siteName: "홀리씨즈교회",
+    title: "HolySeeds Church | 홀리씨즈교회",
+    description: "말씀과 찬양으로 일상을 은혜롭게. 언제 어디서나 설교와 찬양을 만나보세요.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "홀리씨즈교회 - 말씀과 찬양으로 일상을 은혜롭게",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HolySeeds Church | 홀리씨즈교회",
+    description: "말씀과 찬양으로 일상을 은혜롭게. 언제 어디서나 설교와 찬양을 만나보세요.",
+    images: ["/opengraph-image"],
   },
 };
 
