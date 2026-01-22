@@ -6,7 +6,8 @@ import Link from "next/link";
 
 export default function SermonSearch() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchDate, setSearchDate] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [mediaType, setMediaType] = useState<"video" | "audio">("video");
     const [results, setResults] = useState<Array<{
         id: number;
@@ -35,8 +36,11 @@ export default function SermonSearch() {
             if (searchTerm) {
                 query = query.ilike("title", `%${searchTerm}%`);
             }
-            if (searchDate) {
-                query = query.eq("date", searchDate);
+            if (startDate) {
+                query = query.gte("date", startDate);
+            }
+            if (endDate) {
+                query = query.lte("date", endDate);
             }
 
             const { data, error } = await query;
@@ -53,7 +57,7 @@ export default function SermonSearch() {
     useEffect(() => {
         fetchSermons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchDate]);
+    }, [startDate, endDate]);
 
     return (
         <div className="container fade-in" style={{ padding: '80px 24px' }}>
@@ -76,8 +80,8 @@ export default function SermonSearch() {
 
             <section className="glass-card" style={{ marginBottom: '50px' }}>
                 <div style={{
-                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '32px', alignItems: 'end'
+                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '20px', alignItems: 'end'
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>SERMON TITLE</label>
@@ -93,9 +97,20 @@ export default function SermonSearch() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>DATE FILTER</label>
+                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>START DATE</label>
                         <input
-                            type="date" value={searchDate} onChange={(e) => setSearchDate(e.target.value)}
+                            type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                            style={{
+                                padding: '18px', borderRadius: '16px', border: '1px solid var(--border)',
+                                backgroundColor: 'rgba(255, 255, 255, 0.5)', fontSize: '1.1rem', outline: 'none'
+                            }}
+                        />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <label style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--primary)', letterSpacing: '0.1em' }}>END DATE</label>
+                        <input
+                            type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
                             style={{
                                 padding: '18px', borderRadius: '16px', border: '1px solid var(--border)',
                                 backgroundColor: 'rgba(255, 255, 255, 0.5)', fontSize: '1.1rem', outline: 'none'
