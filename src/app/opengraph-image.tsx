@@ -43,7 +43,7 @@ export default async function Image() {
           {/* 아이콘 */}
           <div
             style={{
-              fontSize: '240px',
+              fontSize: '180px',
               marginBottom: '40px',
               display: 'flex',
             }}
@@ -54,7 +54,7 @@ export default async function Image() {
           {/* 교회 이름 */}
           <div
             style={{
-              fontSize: '144px',
+              fontSize: '108px',
               fontWeight: 900,
               background: 'linear-gradient(135deg, #059669, #10B981)',
               backgroundClip: 'text',
@@ -70,7 +70,7 @@ export default async function Image() {
           {/* 영문명 */}
           <div
             style={{
-              fontSize: '64px',
+              fontSize: '48px',
               fontWeight: 700,
               color: '#10B981',
               letterSpacing: '0.2em',
@@ -84,7 +84,7 @@ export default async function Image() {
           {/* 슬로건 */}
           <div
             style={{
-              fontSize: '84px',
+              fontSize: '63px',
               fontWeight: 800,
               color: '#333',
               textAlign: 'center',
@@ -113,7 +113,7 @@ export default async function Image() {
               display: 'flex',
               gap: '40px',
               marginTop: '60px',
-              fontSize: '96px',
+              fontSize: '72px',
             }}
           >
             <div style={{ display: 'flex' }}>📖</div>
@@ -125,7 +125,7 @@ export default async function Image() {
         <div
           style={{
             marginTop: '40px',
-            fontSize: '56px',
+            fontSize: '42px',
             fontWeight: 700,
             color: 'white',
             display: 'flex',
