@@ -118,7 +118,7 @@ export default function InAppBrowserWarning() {
                         color: "#10B981",
                     }}
                 >
-                    {isIOS ? "Safari로 열어주세요" : "Chrome으로 열어주세요"}
+                    앱을 설치해서 사용하시면 편합니다.
                 </h2>
 
                 {/* 설명 */}
@@ -171,9 +171,6 @@ export default function InAppBrowserWarning() {
                         </li>
                         <li>
                             <strong>"다른 브라우저로 열기"</strong> 선택
-                        </li>
-                        <li>
-                            <strong>{isIOS ? "Safari" : "Chrome"}</strong> 선택
                         </li>
                         <li>자동으로 설치 안내가 표시됩니다!</li>
                     </ol>
@@ -232,7 +229,7 @@ export default function InAppBrowserWarning() {
                         cursor: "pointer",
                     }}
                 >
-                    나중에 하기
+                    이번에는 그냥 카카오톡에서 볼래요.
                 </button>
             </div>
         </div>
