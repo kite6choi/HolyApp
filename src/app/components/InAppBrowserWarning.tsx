@@ -106,9 +106,6 @@ export default function InAppBrowserWarning() {
                     ✕
                 </button>
 
-                {/* 아이콘 */}
-                <div style={{ fontSize: "4rem", marginBottom: "20px" }}>🌐</div>
-
                 {/* 제목 */}
                 <h2
                     style={{
@@ -153,7 +150,7 @@ export default function InAppBrowserWarning() {
                             letterSpacing: "0.05em",
                         }}
                     >
-                        📱 설치 방법
+                        📱 설치 방법(아주 간단)
                     </div>
 
                     <ol
@@ -219,14 +216,15 @@ export default function InAppBrowserWarning() {
                     onClick={handleClose}
                     style={{
                         width: "100%",
-                        padding: "16px",
-                        backgroundColor: "#F3F4F6",
-                        border: "none",
+                        padding: "18px",
+                        backgroundColor: "#059669",
+                        border: "2px solid #047857",
                         borderRadius: "12px",
-                        fontSize: "1rem",
+                        fontSize: "1.1rem",
                         fontWeight: 700,
-                        color: "#666",
+                        color: "white",
                         cursor: "pointer",
+                        boxShadow: "0 4px 12px rgba(5, 150, 105, 0.3)",
                     }}
                 >
                     이번에는 그냥 카카오톡에서 볼래요.
