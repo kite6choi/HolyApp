@@ -217,7 +217,7 @@ export default function InstallPrompt() {
                                 lineHeight: "1.8",
                             }}
                         >
-                            <strong style={{ fontSize: "1.3rem" }}>지금 홈 버튼(🏠)을 눌러</strong><br />
+                            <strong style={{ fontSize: "1.3rem" }}>지금 홈버튼(맨 아래 중간의 ⬜)을 눌러</strong><br />
                             HolySeeds 아이콘을 찾아주세요!
                         </p>
                     </div>
