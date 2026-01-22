@@ -41,7 +41,10 @@ export default function InAppBrowserWarning() {
             name = "앱 내부";
         }
 
-        if (detected) {
+        // 이전에 경고를 닫았는지 확인
+        const dismissed = localStorage.getItem("inapp-browser-warning-dismissed");
+
+        if (detected && !dismissed) {
             setBrowserName(name);
             setShowWarning(true);
             console.log(`[InAppBrowserWarning] ${name} 인앱 브라우저 감지됨 (${ios ? 'iOS' : 'Android'})`);
@@ -50,6 +53,7 @@ export default function InAppBrowserWarning() {
 
     const handleClose = () => {
         setShowWarning(false);
+        localStorage.setItem("inapp-browser-warning-dismissed", "true");
     };
 
     if (!showWarning) {
