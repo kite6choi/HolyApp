@@ -169,7 +169,7 @@ export default function InAppBrowserWarning() {
                         <li>
                             <strong>"다른 브라우저로 열기"</strong> 선택
                         </li>
-                        <li>자동으로 설치 안내가 표시됩니다!</li>
+                        <li>자동으로 설치하기 버튼이 표시됩니다.</li>
                     </ol>
                 </div>
 
